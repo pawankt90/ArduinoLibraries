@@ -7,29 +7,29 @@ NeoPatterns::NeoPatterns(uint16_t pixels, uint8_t pin, uint8_t type, void(*callb
 
 void NeoPatterns::PerformPattern()
 {
-    if ((millis() - lastUpdate) > DelayTime) // time to update
+    // Loop until timeout
+    while ((millis() - lastUpdate) < DelayTime) {}
+
+    lastUpdate = millis();
+    switch (ActivePattern)
     {
-        lastUpdate = millis();
-        switch (ActivePattern)
-        {
-        case RAINBOW_CYCLE:
-            PerformRainbowCycle();
-            break;
-        case THEATER_CHASE:
-            PerformTheaterChase();
-            break;
-        case COLOR_WIPE:
-            PerformColorWipe();
-            break;
-        case SCANNER:
-            PerformScanner();
-            break;
-        case FADE:
-            PerformFade();
-            break;
-        default:
-            break;
-        }
+    case RAINBOW_CYCLE:
+        PerformRainbowCycle();
+        break;
+    case THEATER_CHASE:
+        PerformTheaterChase();
+        break;
+    case COLOR_WIPE:
+        PerformColorWipe();
+        break;
+    case SCANNER:
+        PerformScanner();
+        break;
+    case FADE:
+        PerformFade();
+        break;
+    default:
+        break;
     }
 }
 
