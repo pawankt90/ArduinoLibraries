@@ -48,8 +48,8 @@ public:
 
     uint32_t        Color1;
     uint32_t        Color2;  
-    uint16_t        TotalSteps;         // total number of steps in the pattern
-    uint16_t        CurStepIdx;         // current step within the pattern
+    int16_t        TotalSteps;          // total number of steps in the pattern
+    int16_t        CurStepIdx;          // current step within the pattern
 
     void(*OnComplete)();                // Callback on completion of pattern
 

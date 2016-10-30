@@ -7,30 +7,46 @@ NeoPatterns::NeoPatterns(uint16_t pixels, uint8_t pin, uint8_t type, void(*callb
 
 void NeoPatterns::PerformPattern()
 {
-    // Loop until timeout
-    while ((millis() - lastUpdate) < DelayTime) {}
+	bool LoopAgain = true;
 
-    lastUpdate = millis();
-    switch (ActivePattern)
-    {
-    case RAINBOW_CYCLE:
-        PerformRainbowCycle();
-        break;
-    case THEATER_CHASE:
-        PerformTheaterChase();
-        break;
-    case COLOR_WIPE:
-        PerformColorWipe();
-        break;
-    case SCANNER:
-        PerformScanner();
-        break;
-    case FADE:
-        PerformFade();
-        break;
-    default:
-        break;
-    }
+	while (LoopAgain)
+	{
+		// Loop until timeout
+		while ((millis() - lastUpdate) < DelayTime) {}
+
+		lastUpdate = millis();
+		switch (ActivePattern)
+		{
+		case RAINBOW_CYCLE:
+			PerformRainbowCycle();
+			break;
+		case THEATER_CHASE:
+			PerformTheaterChase();
+			break;
+		case COLOR_WIPE:
+			PerformColorWipe();
+			break;
+		case SCANNER:
+			PerformScanner();
+			break;
+		case FADE:
+			PerformFade();
+			break;
+		default:
+			break;
+		}
+
+		Increment();
+
+		if (PatternDirection == FORWARD)
+		{
+			LoopAgain = CurStepIdx == 0 ? false : true;
+		}
+		else
+		{
+			LoopAgain = CurStepIdx == TotalSteps - 1 ? false : true;
+		}
+	}
 }
 
 void NeoPatterns::Increment()
@@ -50,7 +66,7 @@ void NeoPatterns::Increment()
     else // Direction == REVERSE
     {
         --CurStepIdx;
-        if (CurStepIdx <= 0)
+        if (CurStepIdx < 0)
         {
             CurStepIdx = TotalSteps - 1;
             if (OnComplete != NULL)
@@ -92,7 +108,7 @@ void NeoPatterns::PerformRainbowCycle()
         setPixelColor(i, Wheel(((i * 256 / numPixels()) + CurStepIdx) & 255));
     }
     show();
-    Increment();
+    //Increment();
 }
 
 void NeoPatterns::ConfigureTheaterChase(uint32_t color1, uint32_t color2, uint32_t interval, Direction dir)
@@ -120,7 +136,7 @@ void NeoPatterns::PerformTheaterChase()
         }
     }
     show();
-    Increment();
+    //Increment();
 }
 
 void NeoPatterns::ConfigureColorWipe(uint32_t color, uint32_t interval, Direction dir)
@@ -130,14 +146,22 @@ void NeoPatterns::ConfigureColorWipe(uint32_t color, uint32_t interval, Directio
     TotalSteps = numPixels();
     Color1 = color;
     CurStepIdx = 0;
-    PatternDirection = dir;
+    
+	if (PatternDirection != dir)
+	{
+		Reverse();
+	}
+	else
+	{
+		PatternDirection = dir;
+	}
 }
 
 void NeoPatterns::PerformColorWipe()
 {
     setPixelColor(CurStepIdx, Color1);
     show();
-    Increment();
+    //Increment();
 }
 
 void NeoPatterns::ConfigureScanner(uint32_t color1, uint32_t interval)
@@ -167,7 +191,7 @@ void NeoPatterns::PerformScanner()
         }
     }
     show();
-    Increment();
+    //Increment();
 }
 
 void NeoPatterns::ConfigureFade(uint32_t color1, uint32_t color2, uint16_t steps, uint32_t interval, Direction dir = FORWARD)
@@ -192,7 +216,7 @@ void NeoPatterns::PerformFade()
 
     ColorSet(Color(red, green, blue));
     show();
-    Increment();
+    //Increment();
 }
 
 uint32_t NeoPatterns::DimColor(uint32_t color)
