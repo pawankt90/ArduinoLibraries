@@ -9,7 +9,7 @@
 @brief
     Used to specify which pattern to use
 */
-enum  Pattern { NONE, RAINBOW_CYCLE, THEATER_CHASE, COLOR_WIPE, SCANNER, FADE };
+enum  Pattern { NONE, RAINBOW_CYCLE, THEATER_CHASE, THEATER_CHASE_RAINBOW, COLOR_WIPE, SCANNER, FADE };
 
 /*
 @typedef
@@ -48,8 +48,9 @@ public:
 
     uint32_t        Color1;
     uint32_t        Color2;  
-    int16_t        TotalSteps;          // total number of steps in the pattern
-    int16_t        CurStepIdx;          // current step within the pattern
+    int16_t			TotalSteps;          // total number of steps in the pattern
+    int16_t			CurStepIdx;          // current step within the pattern
+	int8_t		RainbowTheaterIter;
 
     void(*OnComplete)();                // Callback on completion of pattern
 
@@ -153,6 +154,34 @@ public:
         None
     */
     void PerformTheaterChase();
+
+	/*
+	@brief
+	Sets THEATER_CHASE_RAINBOW as the active pattern and configures parameters pertaining to the pattern.
+	Note: Does not draw pattern!
+
+	@param
+	[IN]    color1          - First color
+	[In]    color2          - Second color
+	[In]    interval        - Delay time between chases
+	[In]    dir             - direction to perform theater chase in
+
+	@return
+	None
+	*/
+	void ConfigureTheaterChaseRainbow(uint32_t interval, Direction dir = FORWARD);
+
+	/*
+	@brief
+	Draws/executes the theater chase rainbow pattern
+
+	@param
+	None
+
+	@return
+	None
+	*/
+	void PerformTheaterChaseRainbow();
 
     /*
     @brief

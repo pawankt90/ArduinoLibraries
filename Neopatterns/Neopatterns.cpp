@@ -2,7 +2,9 @@
 
 NeoPatterns::NeoPatterns(uint16_t pixels, uint8_t pin, uint8_t type, void(*callback)()):Adafruit_NeoPixel(pixels, pin, type)
 {
+	RainbowTheaterIter = 0;
     OnComplete = callback;
+	setBrightness(128);
 }
 
 void NeoPatterns::PerformPattern()
@@ -22,6 +24,9 @@ void NeoPatterns::PerformPattern()
 			break;
 		case THEATER_CHASE:
 			PerformTheaterChase();
+			break;
+		case THEATER_CHASE_RAINBOW:
+			PerformTheaterChaseRainbow();
 			break;
 		case COLOR_WIPE:
 			PerformColorWipe();
@@ -62,6 +67,12 @@ void NeoPatterns::Increment()
                 OnComplete(); // call the completion callback
             }
         }
+
+		RainbowTheaterIter++;
+		if (RainbowTheaterIter > 2)
+		{
+			RainbowTheaterIter = 0;
+		}
     }
     else // Direction == REVERSE
     {
@@ -74,6 +85,12 @@ void NeoPatterns::Increment()
                 OnComplete(); // call the completion callback
             }
         }
+
+		RainbowTheaterIter--;
+		if (RainbowTheaterIter < 0)
+		{
+			RainbowTheaterIter = 0;
+		}
     }
 }
 
@@ -137,6 +154,32 @@ void NeoPatterns::PerformTheaterChase()
     }
     show();
     //Increment();
+}
+
+void NeoPatterns::ConfigureTheaterChaseRainbow(uint32_t interval, Direction dir)
+{
+	ActivePattern = THEATER_CHASE_RAINBOW;
+	DelayTime = interval;
+	TotalSteps = 255;
+	CurStepIdx = 0;
+	PatternDirection = dir;
+}
+
+void NeoPatterns::PerformTheaterChaseRainbow()
+{
+	for (int i = 0; i < numPixels(); i++) 
+	{
+		if (i % 3 == 0)
+		{
+			setPixelColor(i + RainbowTheaterIter, Wheel((i + CurStepIdx) % 255));    //turn every third pixel on
+		}
+		else
+		{
+			setPixelColor(i + RainbowTheaterIter, 0);
+		}
+	}
+
+	show();
 }
 
 void NeoPatterns::ConfigureColorWipe(uint32_t color, uint32_t interval, Direction dir)
