@@ -64,7 +64,7 @@ public:
     @return
         None
     */
-    NeoPatterns(uint16_t pixels, uint8_t pin, uint8_t type, void(*callback)() = []() {});
+    NeoPatterns(uint8_t brightness, uint16_t pixels, uint8_t pin, uint8_t type, void(*callback)() = []() {});
 
     /*
     @brief

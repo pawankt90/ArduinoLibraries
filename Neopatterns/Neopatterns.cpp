@@ -1,10 +1,14 @@
 #include <Neopatterns.h>
 
-NeoPatterns::NeoPatterns(uint16_t pixels, uint8_t pin, uint8_t type, void(*callback)()):Adafruit_NeoPixel(pixels, pin, type)
+NeoPatterns::NeoPatterns(uint8_t brightness, 
+	uint16_t pixels, 
+	uint8_t pin,
+	uint8_t type, 
+	void(*callback)()):Adafruit_NeoPixel(pixels, pin, type)
 {
 	RainbowTheaterIter = 0;
     OnComplete = callback;
-	setBrightness(128);
+	setBrightness(brightness);
 }
 
 void NeoPatterns::PerformPattern()
